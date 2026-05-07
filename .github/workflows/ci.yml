@@ -22,7 +22,7 @@ on:
         type: boolean
         default: false
       dependency_library:
-        description: '依存ライブラリのリスト（スペース区切り。例: "keiba-scraping mykeibadb-python"）'
+        description: '依存ライブラリのリスト（スペース区切り。例: "keiba-scraping mykeibadb-python@v1.0.0"）。lib@refの形式でrefを指定可能。省略時はmainを使用。'
         required: false
         type: string
         default: ''
@@ -54,8 +54,11 @@ jobs:
           DEPENDENCY_LIBRARY: ${{ inputs.dependency_library }}
         run: |
           python -m pip install --upgrade pip
-          for lib in $DEPENDENCY_LIBRARY; do
-            pip install git+https://github.com/KeibaAI-developer/"$lib".git
+          for lib_ref in $DEPENDENCY_LIBRARY; do
+            lib="${lib_ref%%@*}"
+            ref="${lib_ref#*@}"
+            if [ "$lib" = "$ref" ]; then ref="main"; fi
+            pip install "git+https://github.com/KeibaAI-developer/$lib.git@$ref"
           done
 
       - name: Install dependencies
@@ -117,8 +120,11 @@ jobs:
           DEPENDENCY_LIBRARY: ${{ inputs.dependency_library }}
         run: |
           python -m pip install --upgrade pip
-          for lib in $DEPENDENCY_LIBRARY; do
-            pip install git+https://github.com/KeibaAI-developer/"$lib".git
+          for lib_ref in $DEPENDENCY_LIBRARY; do
+            lib="${lib_ref%%@*}"
+            ref="${lib_ref#*@}"
+            if [ "$lib" = "$ref" ]; then ref="main"; fi
+            pip install "git+https://github.com/KeibaAI-developer/$lib.git@$ref"
           done
 
       - name: Install dependencies

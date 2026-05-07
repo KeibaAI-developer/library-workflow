@@ -42,18 +42,18 @@ jobs:
 | `repo_name` | string | ✅ | - | リポジトリ名（pipキャッシュキーのプレフィックスに使用） |
 | `run_unit_test` | boolean | | `true` | 単体テストを実行するかどうか |
 | `run_integration_test` | boolean | | `false` | 結合テストを実行するかどうか |
-| `dependency_library` | string | | `''` | 依存ライブラリのリスト（スペース区切り） |
+| `dependency_library` | string | | `''` | 依存ライブラリのリスト（スペース区切り、`lib@ref` 形式でrefを指定可能） |
 
 ### `dependency_library` について
 
-GitHubの `KeibaAI-developer` organization配下のリポジトリ名をスペース区切りで指定する。
-指定されたリポジトリは `pip install git+https://github.com/KeibaAI-developer/<lib>.git` でインストールされる。
+`KeibaAI-developer` organization配下のリポジトリ名をスペース区切りで指定する。
+`lib@ref` の形式でブランチ・タグ・コミットSHAを指定できる。`@ref` を省略した場合は `main` を使用する。
 
 ```yaml
 with:
   package_name: my_package
   repo_name: my-repo
-  dependency_library: 'keiba-scraping mykeibadb-python'
+  dependency_library: 'keiba-scraping@main mykeibadb-python@v1.2.0'
 ```
 
 ## 設定例
