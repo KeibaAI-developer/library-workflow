@@ -50,10 +50,12 @@ jobs:
 
       - name: Install dependency libraries
         if: ${{ inputs.dependency_library != '' }}
+        env:
+          DEPENDENCY_LIBRARY: ${{ inputs.dependency_library }}
         run: |
           python -m pip install --upgrade pip
-          for lib in ${{ inputs.dependency_library }}; do
-            pip install git+https://github.com/KeibaAI-developer/${lib}.git
+          for lib in $DEPENDENCY_LIBRARY; do
+            pip install git+https://github.com/KeibaAI-developer/"$lib".git
           done
 
       - name: Install dependencies
@@ -111,10 +113,12 @@ jobs:
 
       - name: Install dependency libraries
         if: ${{ inputs.dependency_library != '' }}
+        env:
+          DEPENDENCY_LIBRARY: ${{ inputs.dependency_library }}
         run: |
           python -m pip install --upgrade pip
-          for lib in ${{ inputs.dependency_library }}; do
-            pip install git+https://github.com/KeibaAI-developer/${lib}.git
+          for lib in $DEPENDENCY_LIBRARY; do
+            pip install git+https://github.com/KeibaAI-developer/"$lib".git
           done
 
       - name: Install dependencies
