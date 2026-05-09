@@ -64,7 +64,7 @@ with:
 
 | シークレット | 必須 | 説明 |
 |---|---|---|
-| `GH_PAT` | | プライベートリポジトリへのアクセストークン。`dependency_library` にプライベートリポジトリが含まれる場合に必要。`repo` スコープを持つPersonal Access Tokenを `KeibaAI-developer` OrganizationのシークレットまたはリポジトリのシークレットとしてGitHubに登録する。 |
+| `GH_PAT` | `dependency_library` にプライベートリポジトリが含まれる場合は必須 | プライベートリポジトリへのアクセストークン。`repo` スコープを持つPersonal Access Tokenを `KeibaAI-developer` OrganizationのシークレットまたはリポジトリのシークレットとしてGitHubに登録する。 |
 
 ## 設定例
 
