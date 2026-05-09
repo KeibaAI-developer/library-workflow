@@ -29,10 +29,13 @@ on:
 jobs:
   ci:
     uses: KeibaAI-developer/library-workflow/.github/workflows/ci.yml@main
+    secrets: inherit
     with:
       package_name: my_package
       repo_name: my-repo
 ```
+
+`secrets: inherit` を指定することで、呼び出し元リポジトリ（またはOrganization）のシークレットがこのワークフローに引き継がれる。
 
 ## 引数
 
@@ -48,6 +51,7 @@ jobs:
 
 `KeibaAI-developer` organization配下のリポジトリ名をスペース区切りで指定する。
 `lib@ref` の形式でブランチ・タグ・コミットSHAを指定できる。`@ref` を省略した場合は `main` を使用する。
+プライベートリポジトリを含む場合は `GH_PAT` シークレットが必要（後述）。
 
 ```yaml
 with:
@@ -55,6 +59,12 @@ with:
   repo_name: my-repo
   dependency_library: 'keiba-scraping@main mykeibadb-python@v1.2.0'
 ```
+
+## シークレット
+
+| シークレット | 必須 | 説明 |
+|---|---|---|
+| `GH_PAT` | | プライベートリポジトリへのアクセストークン。`dependency_library` にプライベートリポジトリが含まれる場合に必要。`repo` スコープを持つPersonal Access Tokenを `KeibaAI-developer` OrganizationのシークレットまたはリポジトリのシークレットとしてGitHubに登録する。 |
 
 ## 設定例
 
@@ -64,6 +74,7 @@ with:
 jobs:
   ci:
     uses: KeibaAI-developer/library-workflow/.github/workflows/ci.yml@main
+    secrets: inherit
     with:
       package_name: discord_logger
       repo_name: discord-logger
@@ -75,10 +86,11 @@ jobs:
 jobs:
   ci:
     uses: KeibaAI-developer/library-workflow/.github/workflows/ci.yml@main
+    secrets: inherit
     with:
       package_name: rating
       repo_name: rating
-      dependency_library: 'keiba-data-interface db-client race-data'
+      dependency_library: 'keiba-data-interface db-client race-data feature-value-utils'
 ```
 
 ### 単体テスト・結合テストの両方を実行
@@ -87,6 +99,7 @@ jobs:
 jobs:
   ci:
     uses: KeibaAI-developer/library-workflow/.github/workflows/ci.yml@main
+    secrets: inherit
     with:
       package_name: keiba_data_interface
       repo_name: keiba-data-interface

@@ -26,6 +26,10 @@ on:
         required: false
         type: string
         default: ''
+    secrets:
+      GH_PAT:
+        description: 'プライベートリポジトリへのアクセストークン'
+        required: false
 
 jobs:
   lint-and-type-check:
@@ -58,7 +62,7 @@ jobs:
             lib="${lib_ref%%@*}"
             ref="${lib_ref#*@}"
             if [ "$lib" = "$ref" ]; then ref="main"; fi
-            pip install "git+https://github.com/KeibaAI-developer/$lib.git@$ref"
+            pip install "git+https://${{ secrets.GH_PAT }}@github.com/KeibaAI-developer/$lib.git@$ref"
           done
 
       - name: Install dependencies
@@ -124,7 +128,7 @@ jobs:
             lib="${lib_ref%%@*}"
             ref="${lib_ref#*@}"
             if [ "$lib" = "$ref" ]; then ref="main"; fi
-            pip install "git+https://github.com/KeibaAI-developer/$lib.git@$ref"
+            pip install "git+https://${{ secrets.GH_PAT }}@github.com/KeibaAI-developer/$lib.git@$ref"
           done
 
       - name: Install dependencies
