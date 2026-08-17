@@ -54,30 +54,25 @@ jobs:
           enable-cache: true
           cache-suffix: ${{ inputs.repo_name }}
 
+      # [tool.ruff]が無いとruffはデフォルトルールセット（E4,E7,E9,F）で走る。
+      # 落ちるのではなく黙って検査が緩くなるため気付けない。設定不在は明示的に
+      # 落とす。
+      - name: Verify ruff config
+        run: |
+          if ! grep -q '^\[tool\.ruff\]' pyproject.toml; then
+            echo "::error file=pyproject.toml::[tool.ruff]が無い。ruffの設定を追加すること"
+            exit 1
+          fi
+
       # ruffはASTだけで動きパッケージ本体を必要としないため、依存の解決を
       # 待たずに先に流す。違反があればインストールを待たずに落ちる。
-      #
-      # ルールをCLIで明示しているのは各ライブラリのpyproject.tomlに
-      # [tool.ruff]が入るまでの暫定措置。ruffのデフォルトルールセットには
-      # EXE/PIEなど意図しないルールが含まれており、設定不在のまま走らせると
-      # 誤検知で落ちる。全ライブラリの移行後に--config=pyproject.tomlへ絞る。
-      #
-      # --selectと--ignoreは専用フラグで渡すこと。--configのインラインTOMLで
-      # lint.ignoreを指定するとlint.selectとの解決順が壊れてignoreが効かない。
+      # ルールは各ライブラリのpyproject.tomlの[tool.ruff]から読む。
       - name: Run ruff
         run: |
           echo "::group::ruff check"
           uvx "ruff@$RUFF_VERSION" check \
             "${{ inputs.package_name }}/" \
             test/ \
-            --line-length=100 \
-            --target-version=py312 \
-            --preview \
-            --select=E,W,F,N,D,I,DOC \
-            --ignore=E203,D105,D107,D403,D415,DOC201,DOC502 \
-            --config 'src = ["."]' \
-            --config 'lint.pydocstyle.convention = "google"' \
-            --config 'lint.isort.extra-standard-library = ["test"]' \
             --output-format=github
           echo "::endgroup::"
 
