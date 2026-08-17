@@ -10,8 +10,16 @@ lint・型チェック・テストを実行するCIワークフロー。
 
 **ジョブ構成**
 
-1. `lint-and-type-check`: isort / flake8 / mypy を実行
+1. `lint-and-type-check`: ruff / mypy を実行
 2. `test`: 単体テスト・結合テストを実行（`lint-and-type-check` 完了後）
+
+**静的解析ツールのバージョン**
+
+ruffのバージョンはこのワークフローの `env.RUFF_VERSION` で集中管理しており、各ライブラリの
+`pyproject.toml` には書かない。リポジトリごとに版がずれると同じコードでも判定結果が変わるため。
+ruffはASTだけで動きパッケージ本体を必要としないので、`uvx` で直接実行している。
+
+mypyは型スタブと組み合わせて結果が決まるため、各ライブラリの `dev` extras で管理する。
 
 ## 使用方法
 
@@ -41,8 +49,8 @@ jobs:
 
 | 引数 | 型 | 必須 | デフォルト | 説明 |
 |---|---|---|---|---|
-| `package_name` | string | ✅ | - | パッケージのディレクトリ名（isort / flake8 / mypy / pytest のターゲット） |
-| `repo_name` | string | ✅ | - | リポジトリ名（pipキャッシュキーのプレフィックスに使用） |
+| `package_name` | string | ✅ | - | パッケージのディレクトリ名（ruff / mypy / pytest のターゲット） |
+| `repo_name` | string | ✅ | - | リポジトリ名（uvキャッシュのサフィックスに使用） |
 | `run_unit_test` | boolean | | `true` | 単体テストを実行するかどうか |
 | `run_integration_test` | boolean | | `false` | 結合テストを実行するかどうか |
 | `dependency_library` | string | | `''` | 依存ライブラリのリスト（スペース区切り、`lib@ref` 形式でrefを指定可能） |
