@@ -22,7 +22,7 @@ on:
         type: boolean
         default: false
       dependency_library:
-        description: '依存ライブラリのリスト（スペース区切り。例: "keiba-scraping mykeibadb-python@v1.0.0"）。lib@refの形式でrefを指定可能。省略時はdevelop（開発中の最新）を使用。'
+        description: '依存ライブラリのリスト（スペース区切り。例: "keiba-scraping mykeibadb-python@v1.0.0"）。lib@refの形式でrefを指定可能。省略時はdevelop（開発中の最新）を使用。owner/libの形式で他organizationのリポジトリも指定できる。依存される側から順に並べる。'
         required: false
         type: string
         default: ''
@@ -97,7 +97,11 @@ jobs:
             lib="${lib_ref%%@*}"
             ref="${lib_ref#*@}"
             if [ "$lib" = "$ref" ]; then ref="develop"; fi
-            uv pip install "git+https://github.com/KeibaAI-developer/$lib.git@$ref"
+            case "$lib" in
+              */*) repo="$lib" ;;
+              *) repo="KeibaAI-developer/$lib" ;;
+            esac
+            uv pip install "git+https://github.com/$repo.git@$ref"
           done
 
       - name: Install dependencies
@@ -145,7 +149,11 @@ jobs:
             lib="${lib_ref%%@*}"
             ref="${lib_ref#*@}"
             if [ "$lib" = "$ref" ]; then ref="develop"; fi
-            uv pip install "git+https://github.com/KeibaAI-developer/$lib.git@$ref"
+            case "$lib" in
+              */*) repo="$lib" ;;
+              *) repo="KeibaAI-developer/$lib" ;;
+            esac
+            uv pip install "git+https://github.com/$repo.git@$ref"
           done
 
       - name: Install dependencies

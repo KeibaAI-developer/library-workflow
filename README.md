@@ -58,14 +58,18 @@ jobs:
 ### `dependency_library` について
 
 `KeibaAI-developer` organization配下のリポジトリ名をスペース区切りで指定する。
-`lib@ref` の形式でブランチ・タグ・コミットSHAを指定できる。`@ref` を省略した場合は `main` を使用する。
+`lib@ref` の形式でブランチ・タグ・コミットSHAを指定できる。`@ref` を省略した場合は `develop` を使用する。
+`owner/lib` の形式にすると、`KeibaAI-developer` 以外のorganizationのリポジトリも指定できる。
 プライベートリポジトリを含む場合は `GH_PAT` シークレットが必要（後述）。
+
+**指定した順にインストールする。** 依存される側を先に並べること。
+モノレポ内ライブラリはPyPIに公開していないため、依存されるライブラリが未インストールのまま先に依存する側をインストールすると、PyPIへの問い合わせで解決に失敗する。
 
 ```yaml
 with:
   package_name: my_package
   repo_name: my-repo
-  dependency_library: 'keiba-scraping@main mykeibadb-python@v1.2.0'
+  dependency_library: 'keiba-scraping@main mykeibadb-python@v1.2.0 Kubo-Tech/discord-logger@develop'
 ```
 
 ## シークレット
